@@ -11,14 +11,15 @@ import { addReview, listReviews } from "../controllers/reviewController.js";
 
 const router = express.Router();
 
-router.get("/", listPlaces);
-router.get("/:id", getPlace);
-router.post("/", auth, admin, createPlace);
-router.put("/:id", auth, admin, updatePlace);
-router.delete("/:id", auth, admin, deletePlace);
+// ===== Places =====
+router.get("/", listPlaces); // danh sách địa điểm
+router.get("/:placeId", getPlace); // chi tiết 1 địa điểm
+router.post("/", auth, admin, createPlace); // admin tạo mới
+router.put("/:placeId", auth, admin, updatePlace); // admin sửa
+router.delete("/:placeId", auth, admin, deletePlace); // admin xóa
 
-// reviews cho place
-router.get("/:id/reviews", listReviews);
-router.post("/:id/reviews", auth, addReview);
+// ===== Reviews cho place =====
+router.get("/:placeId/reviews", listReviews); // list reviews theo place
+router.post("/:placeId/reviews", auth, addReview); // user thêm review
 
 export default router;

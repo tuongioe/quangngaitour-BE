@@ -29,28 +29,56 @@ export const getPlace = async (req, res) => {
 };
 
 export const createPlace = async (req, res) => {
-  const { name, category, description = "", images = [] } = req.body;
-  const doc = await Place.create({
-    name,
-    category,
-    description,
-    images,
-    createdBy: req.user._id,
-  });
-  res.status(201).json(doc);
+  try {
+    const {
+      name,
+      category,
+      description = "",
+      address = "",
+      images = [],
+    } = req.body;
+    const doc = await Place.create({
+      name,
+      category,
+      description,
+      address, // 🆕 thêm trường address
+      images,
+      createdBy: req.user._id,
+    });
+    res.status(201).json(doc);
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Failed to create place", error: err.message });
+  }
 };
 
 export const updatePlace = async (req, res) => {
-  const updated = await Place.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-  });
-  if (!updated) return res.status(404).json({ message: "Place not found" });
-  res.json(updated);
+  try {
+    const { name, category, description, address, images } = req.body;
+    const updated = await Place.findByIdAndUpdate(
+      req.params.id,
+      { name, category, description, address, images },
+      { new: true }
+    );
+    if (!updated) return res.status(404).json({ message: "Place not found" });
+    res.json(updated);
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Failed to update place", error: err.message });
+  }
 };
 
 export const deletePlace = async (req, res) => {
-  const del = await Place.findByIdAndDelete(req.params.id);
-  if (!del) return res.status(404).json({ message: "Place not found" });
-  await Review.deleteMany({ place: del._id }); // remove related reviews
-  res.json({ message: "Deleted" });
+  try {
+    const del = await Place.findByIdAndDelete(req.params.id);
+    if (!del) return res.status(404).json({ message: "Place not found" });
+    await Review.deleteMany({ place: del._id }); // remove related reviews
+    res.json({ message: "Deleted" });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Failed to delete place", error: err.message });
+  }
 };

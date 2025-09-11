@@ -13,14 +13,24 @@ dotenv.config();
 const app = express();
 
 // ===== Middlewares =====
-app.use(cors({ origin: process.env.CLIENT_URL || "*", credentials: true }));
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true, // bắt buộc nếu dùng cookie
+  })
+);
+
+app.options("*", cors({ origin: "http://localhost:5173", credentials: true })); // cho preflight
+
 app.use(express.json({ limit: "2mb" }));
 app.use(morgan("dev"));
 
 // ===== Routes =====
-app.use("/api/auth", authRoutes); // Đăng ký, đăng nhập
-app.use("/api/users", userRoutes); // Quản lý user, profile, favorites
-app.use("/api/places", placeRoutes); // CRUD địa điểm + reviews
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/places", placeRoutes);
 
 // Health check endpoint
 app.get("/api/health", (req, res) => res.json({ ok: true }));

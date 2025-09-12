@@ -7,7 +7,7 @@ const sign = (id, role) =>
   });
 
 export const register = async (req, res) => {
-  const { name, email, password, phone = "", address = "" } = req.body;
+  const { name = "User", email, password, phone = "", address = "" } = req.body;
   try {
     const existing = await User.findOne({ email });
     if (existing)

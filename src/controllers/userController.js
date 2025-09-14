@@ -7,19 +7,30 @@ export const getMe = (req, res) => {
 
 // Cập nhật profile của chính mình
 export const updateMe = async (req, res) => {
-  const { name, phone, address } = req.body;
-  const user = await User.findByIdAndUpdate(
-    req.user._id,
-    {
-      $set: {
-        ...(name && { name }),
-        ...(phone && { phone }),
-        ...(address && { address }),
+  try {
+    const { name, phone, address, avatar } = req.body;
+
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      {
+        $set: {
+          ...(name && { name }),
+          ...(phone && { phone }),
+          ...(address && { address }),
+          ...(avatar && { avatar }),
+        },
       },
-    },
-    { new: true }
-  ).select("-password");
-  res.json(user);
+      { new: true }
+    ).select("-password");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 };
 
 // Admin cập nhật role cho user khác

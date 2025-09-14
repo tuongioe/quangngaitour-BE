@@ -15,6 +15,15 @@ const userSchema = new mongoose.Schema(
     role: { type: String, enum: ["user", "admin"], default: "user" },
     phone: { type: String, default: "" },
     address: { type: String, default: "" },
+    avatar: { type: String, default: "" },
+
+    // thêm favorites
+    favorites: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Place", // tham chiếu sang model Place
+      },
+    ],
   },
   { timestamps: true }
 );

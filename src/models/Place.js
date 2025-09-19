@@ -3,7 +3,11 @@ import mongoose from "mongoose";
 const placeSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true },
-    category: { type: String, enum: ["tourism", "restaurant"], required: true },
+    category: {
+      type: String,
+      enum: ["destination", "restaurant"],
+      required: true,
+    },
     description: { type: String, default: "" },
     address: { type: String, required: true, trim: true }, // 🆕 địa chỉ
     images: [{ type: String }], // store image URLs; switch to file upload later if needed

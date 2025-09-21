@@ -8,6 +8,24 @@ const sign = (id, role) =>
 
 export const register = async (req, res) => {
   const { name = "User", email, password, phone = "", address = "" } = req.body;
+  name.trim();
+  email.trim();
+
+  // Regex email
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  // Validation thủ công
+  if (!email || !emailRegex.test(email)) {
+    return res.status(400).json({ message: "Invalid email format" });
+  }
+  if (!password || password.length < 6) {
+    return res
+      .status(400)
+      .json({ message: "Password must be at least 6 characters" });
+  }
+  if (phone && !/^[0-9]{9,11}$/.test(phone)) {
+    return res.status(400).json({ message: "Phone must be 9-11 digits" });
+  }
   try {
     const existing = await User.findOne({ email });
     if (existing)
